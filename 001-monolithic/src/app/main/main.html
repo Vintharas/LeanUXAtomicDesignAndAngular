@@ -1,0 +1,45 @@
+<div class="container">
+
+  <header>
+    <acme-navbar></acme-navbar>
+  </header>
+
+  <!-- timer -->
+  <section class="jumbotron text-center">
+    <h1>{{main.timeLeft}}</h1>
+    <p class="animated infinite" ng-class="main.classAnimation">
+      <button type="button" class="btn btn-lg btn-success" ng-click="main.startPomodoro()" ng-if="!main.performingTask">Ready, Set, Go!</button>
+      <button type="button" class="btn btn-lg btn-error" ng-click="main.cancelPomodoro()" ng-if="main.performingTask">Cancel Pomodoro!</button>
+    </p>
+  </section>
+
+  <!-- tasks -->
+  <!-- add new tasks form -->
+  <section class="row row--with-margins">
+    <div class="col-sm-6 col-sm-offset-3">
+        <form class="row">
+            <div class="col-xs-6">
+                <input type="text" class="form-control" placeholder="title" ng-model="main.newTask.title">
+            </div>
+            <div class="col-xs-2">
+                <input type="number" class="form-control" placeholder="pomodoros" ng-model="main.newTask.pomodoros">
+            </div>
+            <div class="col-xs-4">
+                <button class="btn btn-default btn-block" ng-click="main.addNewTask()">Add new task</button>
+            </div>
+        </form>
+    </div>
+  </section>
+  <!-- list tasks -->
+  <section class="row">
+    <div class="col-sm-6 col-sm-offset-3" >
+      <ul class="list-group">
+          <li class="list-group-item" ng-repeat="task in main.tasks | orderBy:'rank'">
+            <span class="badge">{{ task.pomodoros }}</span>
+            {{ task.title }}
+          </li>
+      </ul>
+    </div>
+  </section>
+
+</div>
