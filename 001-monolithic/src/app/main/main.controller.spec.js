@@ -70,6 +70,21 @@ describe('MainController', () => {
         expect(vm.timeLeft).toBe("25:00");
       });
 
+      it('should stop after 25 minutes', () => {
+          // Arrange
+          const pomodoroInMilliseconds = 25*60*1000;
+          // Act
+          vm.startPomodoro();
+          interval.flush(pomodoroInMilliseconds);
+          // Assert
+          expect(vm.performingTask).toBe(false);
+      });
+
+      // increase active task pomodoro count
+      // active task?
+      // rest time
+      // each 4 long rest...
+
       afterEach(() => vm.cancelPomodoro());
 
   });

@@ -21,14 +21,22 @@ export class MainController {
       this.timerInterval = this.$interval(this.advanceTimer.bind(this), 1000);
   }
   cancelPomodoro(){
-      this.performingTask = false;
-      this.$interval.cancel(this.timerInterval);
+      this.stopPomodoro();
       this.resetPomodoroTimer();
   }
   advanceTimer(){
       this.$log.debug('advancing timer 1 second');
       this.currentTime -= 1;
-      this.timeLeft = formatTime(this.currentTime);
+      if (this.currentTime === 0) this.completePomodoro();
+      else this.timeLeft = formatTime(this.currentTime);
+  }
+  stopPomodoro(){
+      this.performingTask = false;
+      this.$interval.cancel(this.timerInterval);
+  }
+  completePomodoro(){
+      this.stopPomodoro();
+      this.resetPomodoroTimer();
   }
   addNewTask(){
       this.tasks.push(this.newTask);
