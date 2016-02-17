@@ -17,18 +17,26 @@ describe('MainController', () => {
         expect(vm.tasks.length).toBe(2);
       });
 
+      it('should have an active task', () => {
+          // Arrange, Act, Assert
+          expect(vm.activeTask).toBeDefined();
+      });
+
       it('should be able to add new tasks', () => {
-        // Arrange
+        // Arrange, Act
         vm.addNewTask();
-        // Act, Assert
+        // Assert
         expect(vm.tasks.length).toBe(3);
         const newTask = vm.tasks[2];
         expect(newTask).toEqual({
             title: '',
             pomodoros: 1,
-            workedPomodoros: 0
+            workedPomodoros: 0,
+            isActive: false,
+            rank: 0
         });
       });
+
   });
 
   describe('Pomodoro', () => {
@@ -80,10 +88,43 @@ describe('MainController', () => {
           expect(vm.performingTask).toBe(false);
       });
 
-      // increase active task pomodoro count
-      // active task?
+      it('should increase active task pomodoro count after completing a pomodoro', () => {
+          // Arrange
+          const pomodoroInMilliseconds = 25*60*1000;
+          // Act
+          vm.startPomodoro();
+          interval.flush(pomodoroInMilliseconds);
+          // Assert
+          expect(vm.activeTask.workedPomodoros).toBe(1);
+      });
+
+      it('should start rest period after 25 minutes', () => {
+          // Arrange
+          const pomodoroInMilliseconds = 25*60*1000;
+          // Act
+          vm.startPomodoro();
+          interval.flush(pomodoroInMilliseconds);
+          // Assert
+          expect(vm.resting).toBe(true);
+      });
+
+      it('should complete rest period after 5 minutes', () => {
+          // Arrange
+          const pomodoroInMilliseconds = 25*60*1000;
+          const restInMilliseconds = 5*60*1000;
+          // Act
+          vm.startPomodoro();
+          interval.flush(pomodoroInMilliseconds);
+          interval.flush(restInMilliseconds);
+          // Assert
+          expect(vm.resting).toBe(false);
+      });
+
       // rest time
       // each 4 long rest...
+      // drag and drop (change rank)
+      // can't start pomodoro if there are no tasks
+      // set active task when there's only one task
 
       afterEach(() => vm.cancelPomodoro());
 

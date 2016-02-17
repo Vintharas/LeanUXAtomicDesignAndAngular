@@ -2,7 +2,7 @@ export class MainController {
   constructor ($interval, $log) {
     'ngInject';
     const vm = this,
-          currentTime = getPomorodoTime();
+          currentTime = getPomodoroTime();
 
     Object.assign(vm, {
         // timer
@@ -11,6 +11,9 @@ export class MainController {
         // tasks
         tasks: getInitialTasks(),
         newTask: getNewTask(),
+        get activeTask(){
+            return this.tasks.find(t => t.isActive);
+        },
         $interval,
         $log
     });
@@ -27,7 +30,10 @@ export class MainController {
   advanceTimer(){
       this.$log.debug('advancing timer 1 second');
       this.currentTime -= 1;
-      if (this.currentTime === 0) this.completePomodoro();
+      if (this.currentTime === 0) {
+          if (this.performingTask) this.completePomodoro();
+          else this.completeRest();
+      }
       else this.timeLeft = formatTime(this.currentTime);
   }
   stopPomodoro(){
@@ -35,7 +41,17 @@ export class MainController {
       this.$interval.cancel(this.timerInterval);
   }
   completePomodoro(){
+      this.activeTask.workedPomodoros++;
       this.stopPomodoro();
+      this.startRest();
+  }
+  startRest(){
+      this.resting = true;
+      this.setupRestTime();
+      this.timerInterval = this.$interval(this.advanceTimer.bind(this), 1000);
+  }
+  completeRest(){
+      this.resting = false;
       this.resetPomodoroTimer();
   }
   addNewTask(){
@@ -43,20 +59,29 @@ export class MainController {
       this.newTask = getNewTask();
   }
   resetPomodoroTimer(){
-      this.currentTime = getPomorodoTime();
+      this.setTime(getPomodoroTime());
+  }
+  setupRestTime(){
+      this.setTime(getRestTime());
+  }
+  setTime(time){
+      this.currentTime = time;
       this.timeLeft = formatTime(this.currentTime);
   }
 }
 
 function getInitialTasks(){
     return [
-      { title: 'Write dissertation on ewoks', rank: 0, pomodoros: 3},
-      { title: 'Buy flowers for Malin', rank: 1, pomodoros: 1 }
+      Task({ title: 'Write dissertation on ewoks', rank: 0, pomodoros: 3, isActive: true}),
+      { title: 'Buy flowers for Malin', rank: 1, pomodoros: 1, isActive: false}
     ];
 }
 
-function getPomorodoTime(){
+function getPomodoroTime(){
     return 25*60;
+}
+function getRestTime(){
+    return 5*60;
 }
 
 function formatTime(time){
@@ -73,9 +98,16 @@ function formatDigits(digits){
 }
 
 function getNewTask () {
+    return Task();
+}
+
+function Task({title='', pomodoros=1, isActive=false, rank=0}={}){
     return {
-        title: '', 
-        pomodoros: 1,
-        workedPomodoros: 0
+        title, 
+        pomodoros,
+        workedPomodoros: 0,
+        isActive: isActive,
+        rank
     };
 }
+
