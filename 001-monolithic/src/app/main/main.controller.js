@@ -11,12 +11,24 @@ export class MainController {
         // tasks
         tasks: getInitialTasks(),
         newTask: getNewTask(),
-        get activeTask(){
-            return this.tasks.find(t => t.isActive);
-        },
         $interval,
         $log
     });
+
+    // angular and getters don't seem to work 
+    // very well together
+    vm.activeTask = this.tasks.find(t => t.isActive);
+  }
+
+  addNewTask(){
+      this.tasks.push(this.newTask);
+      this.newTask = getNewTask();
+  }
+  setTaskAsActive(task){
+      const currentActiveTask = this.tasks.find(t => t.isActive);
+      currentActiveTask.isActive = false;
+      task.isActive = true;
+      this.activeTask = task;
   }
 
   startPomodoro(){
@@ -53,10 +65,6 @@ export class MainController {
   completeRest(){
       this.resting = false;
       this.resetPomodoroTimer();
-  }
-  addNewTask(){
-      this.tasks.push(this.newTask);
-      this.newTask = getNewTask();
   }
   resetPomodoroTimer(){
       this.setTime(getPomodoroTime());

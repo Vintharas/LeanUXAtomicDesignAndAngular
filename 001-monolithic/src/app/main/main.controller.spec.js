@@ -37,6 +37,23 @@ describe('MainController', () => {
         });
       });
 
+      it('should be able to set which task is active', (done) => {
+
+          inject(($rootScope) => {
+          // Arrange
+          vm.addNewTask();
+          const newTask = vm.tasks[2];
+          // Act
+          $rootScope.$apply(() => {
+          vm.setTaskAsActive(newTask);
+          // Assert
+          expect(newTask.isActive).toBe(true);
+          expect(vm.activeTask).toBe(newTask);
+          done();
+          });
+          });
+      });
+
   });
 
   describe('Pomodoro', () => {
@@ -120,11 +137,11 @@ describe('MainController', () => {
           expect(vm.resting).toBe(false);
       });
 
-      // rest time
-      // each 4 long rest...
+      // set active task manually
+      // set active task when there's only one task
+      // each 4 long rest you get a 20 minute rest
       // drag and drop (change rank)
       // can't start pomodoro if there are no tasks
-      // set active task when there's only one task
 
       afterEach(() => vm.cancelPomodoro());
 
