@@ -11,6 +11,7 @@ export class MainController {
         // tasks
         tasks: getInitialTasks(),
         newTask: getNewTask(),
+        get hasNoTasks() { return this.tasks.length === 0;},
         $interval,
         $log
     });
@@ -22,23 +23,33 @@ export class MainController {
 
   addNewTask(){
       this.tasks.push(this.newTask);
+      if (this.tasks.length === 1) this.setTaskAsActive(this.newTask);
       this.newTask = getNewTask();
   }
+
+  removeTask(task){
+      const index = this.tasks.indexOf(task);
+      if (index !== -1){ this.tasks.splice(index,1); }
+  }
+
   setTaskAsActive(task){
       const currentActiveTask = this.tasks.find(t => t.isActive);
-      currentActiveTask.isActive = false;
+      if (currentActiveTask) currentActiveTask.isActive = false;
       task.isActive = true;
       this.activeTask = task;
   }
 
   startPomodoro(){
+      if (this.performingTask) throw new Error("Can't start a new pomodoro while one is already running");
       this.performingTask = true;
-      this.timerInterval = this.$interval(this.advanceTimer.bind(this), 1000);
+      this.setTimerInterval(getPomodoroTime());
   }
+
   cancelPomodoro(){
       this.stopPomodoro();
       this.resetPomodoroTimer();
   }
+
   advanceTimer(){
       this.$log.debug('advancing timer 1 second');
       this.currentTime -= 1;
@@ -48,30 +59,52 @@ export class MainController {
       }
       else this.timeLeft = formatTime(this.currentTime);
   }
+
   stopPomodoro(){
       this.performingTask = false;
-      this.$interval.cancel(this.timerInterval);
+      this.cleanInterval();
   }
+
   completePomodoro(){
       this.activeTask.workedPomodoros++;
       this.stopPomodoro();
       this.startRest();
   }
+
   startRest(){
       this.resting = true;
       this.setupRestTime();
-      this.timerInterval = this.$interval(this.advanceTimer.bind(this), 1000);
+      this.setTimerInterval(getRestTime(this.activeTask));
+
   }
+  setTimerInterval(seconds){
+      //console.log('create interval');
+      this.cleanInterval(); // make sure we release all intervals
+      this.timerInterval = this.$interval(this.advanceTimer.bind(this), 1000, seconds);
+  }
+
   completeRest(){
+      this.cleanInterval();
       this.resting = false;
       this.resetPomodoroTimer();
   }
+
+  cleanInterval(){
+      if (this.timerInterval) {
+          //console.log('stopping interval');
+          this.$interval.cancel(this.timerInterval);
+          this.timerInterval = null;
+      }
+  }
+
   resetPomodoroTimer(){
       this.setTime(getPomodoroTime());
   }
+
   setupRestTime(){
-      this.setTime(getRestTime());
+      this.setTime(getRestTime(this.activeTask));
   }
+
   setTime(time){
       this.currentTime = time;
       this.timeLeft = formatTime(this.currentTime);
@@ -88,7 +121,8 @@ function getInitialTasks(){
 function getPomodoroTime(){
     return 25*60;
 }
-function getRestTime(){
+function getRestTime(activeTask){
+    if (activeTask.workedPomodoros % 4 === 0) return 20*60;
     return 5*60;
 }
 

@@ -8,7 +8,7 @@
   <section class="jumbotron text-center">
     <h1>{{main.timeLeft}}</h1>
     <p class="animated infinite" ng-class="main.classAnimation">
-      <button type="button" class="btn btn-lg btn-success" ng-click="main.startPomodoro()" ng-if="!main.performingTask">Ready, Set, Go!</button>
+      <button type="button" class="btn btn-lg btn-success" ng-click="main.startPomodoro()" ng-if="!main.performingTask" ngDisabled="main.hasNoTasks">Ready, Set, Go!</button>
       <button type="button" class="btn btn-lg btn-error" ng-click="main.cancelPomodoro()" ng-if="main.performingTask">Cancel Pomodoro!</button>
     </p>
   </section>
@@ -39,6 +39,7 @@
             {{ task.title }}
             <span class="label label-success pull-right">{{ task.pomodoros }}</span>
             <span class="label label-default pull-right">{{ task.workedPomodoros }}</span>
+            <button class="btn btn-default pull-right" ng-click="main.removeTask(task)"><i class="glyphicon glyphicon-remove"></i></button>
           </li>
       </ul>
     </div>

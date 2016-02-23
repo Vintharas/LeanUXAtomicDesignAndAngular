@@ -9,6 +9,14 @@ describe('MainController', () => {
     interval = $interval;
   }));
 
+  beforeEach(() => {
+      console.log('Start test: ' + new Date());
+  });
+
+  afterEach(() => {
+      console.log('End test:' + new Date());
+  });
+
   describe('Tasks', () => {
 
       it('should define 2 initial tasks', () => {
@@ -37,26 +45,41 @@ describe('MainController', () => {
         });
       });
 
-      it('should be able to set which task is active', (done) => {
-
-          inject(($rootScope) => {
+      it('should be able to set which task is active', () => {
           // Arrange
           vm.addNewTask();
           const newTask = vm.tasks[2];
           // Act
-          $rootScope.$apply(() => {
           vm.setTaskAsActive(newTask);
           // Assert
           expect(newTask.isActive).toBe(true);
           expect(vm.activeTask).toBe(newTask);
-          done();
-          });
-          });
+      });
+
+      it('should set first task as active when adding the first task', () => {
+          // Arrange
+          vm.tasks = [];
+          // Act
+          vm.addNewTask();
+          // Assert
+          expect(vm.tasks.length).toBe(1);
+          expect(vm.activeTask).toBe(vm.tasks[0]);
+      });
+
+      it('should be able to remove a task', () => {
+          // Arrange
+          const taskToRemove = vm.tasks[0];
+          // Act
+          vm.removeTask(taskToRemove);
+          // Assert
+          expect(vm.tasks).not.toEqual(jasmine.arrayContaining([taskToRemove]));
       });
 
   });
 
   describe('Pomodoro', () => {
+      const pomodoroInMilliseconds = 25*60*1000;
+      const restInMilliseconds = 5*60*1000;
 
       it('should start with a timer set to 25:00', () => {
         // Arrange, Act, Assert
@@ -96,9 +119,7 @@ describe('MainController', () => {
       });
 
       it('should stop after 25 minutes', () => {
-          // Arrange
-          const pomodoroInMilliseconds = 25*60*1000;
-          // Act
+          // Arrange, Act
           vm.startPomodoro();
           interval.flush(pomodoroInMilliseconds);
           // Assert
@@ -106,9 +127,7 @@ describe('MainController', () => {
       });
 
       it('should increase active task pomodoro count after completing a pomodoro', () => {
-          // Arrange
-          const pomodoroInMilliseconds = 25*60*1000;
-          // Act
+          // Arrange, Act
           vm.startPomodoro();
           interval.flush(pomodoroInMilliseconds);
           // Assert
@@ -116,9 +135,7 @@ describe('MainController', () => {
       });
 
       it('should start rest period after 25 minutes', () => {
-          // Arrange
-          const pomodoroInMilliseconds = 25*60*1000;
-          // Act
+          // Arrange, Act
           vm.startPomodoro();
           interval.flush(pomodoroInMilliseconds);
           // Assert
@@ -126,10 +143,7 @@ describe('MainController', () => {
       });
 
       it('should complete rest period after 5 minutes', () => {
-          // Arrange
-          const pomodoroInMilliseconds = 25*60*1000;
-          const restInMilliseconds = 5*60*1000;
-          // Act
+          // Arrange, Act
           vm.startPomodoro();
           interval.flush(pomodoroInMilliseconds);
           interval.flush(restInMilliseconds);
@@ -137,13 +151,44 @@ describe('MainController', () => {
           expect(vm.resting).toBe(false);
       });
 
-      // set active task manually
-      // set active task when there's only one task
-      // each 4 long rest you get a 20 minute rest
+      // this test takes 10 seconds to run
+      // and I have no clue why
+      // probably has to do with intervals
+      // but I am sure I am cleaning them
+      xit('should start a 20 minutes rest every 4 pomodoros', () => {
+          // Arrange
+          doPomodoroAndRest(vm, 3);
+          // Act
+          vm.startPomodoro();
+          interval.flush(pomodoroInMilliseconds);
+          // Assert
+          expect(vm.resting).toBe(true);
+          expect(vm.timeLeft).toBe("20:00");
+      });
+
+      function doPomodoroAndRest(vm, times=1){
+          repeat(times, () => {
+              vm.startPomodoro();
+              interval.flush(pomodoroInMilliseconds);
+              interval.flush(restInMilliseconds);
+          });
+      }
+
+      function repeat(times, action){
+          while(times > 0){
+              action();
+              times--;
+          }
+      }
+
+      // on remove task => if it's active => set task
       // drag and drop (change rank)
       // can't start pomodoro if there are no tasks
+      // search filter functionality
+      // Archive tasks and be able to see a historic view with some metrics regarding our performance 
+      // We also want to be more consistent with the search/filter functionality within the app so we move it to the header’s top right corner:
 
-      afterEach(() => vm.cancelPomodoro());
+      afterEach(() => vm.cleanInterval());
 
   });
 
