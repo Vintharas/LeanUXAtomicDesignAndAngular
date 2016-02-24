@@ -8,7 +8,7 @@
   <section class="jumbotron text-center">
     <h1>{{main.timeLeft}}</h1>
     <p class="animated infinite" ng-class="main.classAnimation">
-      <button type="button" class="btn btn-lg btn-success" ng-click="main.startPomodoro()" ng-if="!main.performingTask" ngDisabled="main.hasNoTasks">Ready, Set, Go!</button>
+      <button type="button" class="btn btn-lg btn-success" ng-click="main.startPomodoro()" ng-if="!main.performingTask" ng-disabled="!main.hasTasks()">Ready, Set, Go!</button>
       <button type="button" class="btn btn-lg btn-error" ng-click="main.cancelPomodoro()" ng-if="main.performingTask">Cancel Pomodoro!</button>
     </p>
   </section>
@@ -34,7 +34,7 @@
   <section class="row">
     <div class="col-sm-6 col-sm-offset-3" >
       <ul class="list-group">
-          <li class="list-group-item" ng-repeat="task in main.tasks | orderBy:'rank'" ng-class="{active: task.isActive}">
+          <li class="list-group-item" ng-repeat="task in main.tasks" ng-class="{active: task.isActive}">
               <span class="btn btn-info" ng-click="main.setTaskAsActive(task)"><i class="glyphicon glyphicon-play-circle"></i></span>
             {{ task.title }}
             <span class="label label-success pull-right">{{ task.pomodoros }}</span>

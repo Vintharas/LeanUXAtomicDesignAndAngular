@@ -9,6 +9,7 @@ describe('MainController', () => {
     interval = $interval;
   }));
 
+  /*
   beforeEach(() => {
       console.log('Start test: ' + new Date());
   });
@@ -16,6 +17,7 @@ describe('MainController', () => {
   afterEach(() => {
       console.log('End test:' + new Date());
   });
+  */
 
   describe('Tasks', () => {
 
@@ -40,8 +42,7 @@ describe('MainController', () => {
             title: '',
             pomodoros: 1,
             workedPomodoros: 0,
-            isActive: false,
-            rank: 0
+            isActive: false
         });
       });
 
@@ -73,6 +74,43 @@ describe('MainController', () => {
           vm.removeTask(taskToRemove);
           // Assert
           expect(vm.tasks).not.toEqual(jasmine.arrayContaining([taskToRemove]));
+      });
+
+      it('should make the next task as active when removing the active task', () => {
+          // Arrange
+          vm.addNewTask();
+          const taskToRemove = vm.tasks[0];
+          // Act
+          vm.removeTask(taskToRemove);
+          // Assert
+          expect(vm.tasks).not.toEqual(jasmine.arrayContaining([taskToRemove]));
+          expect(vm.activeTask).toBe(vm.tasks[0]);
+      });
+
+      it('should make the previous task as active when removing the last task that happens to be the active one', () => {
+          // Arrange
+          vm.addNewTask();
+          const taskToRemove = vm.tasks[2];
+          vm.setTaskAsActive(taskToRemove);
+          // Act
+          vm.removeTask(taskToRemove);
+          // Assert
+          expect(vm.tasks).not.toEqual(jasmine.arrayContaining([taskToRemove]));
+          expect(vm.activeTask).toBe(vm.tasks[1]);
+      });
+
+      describe("hasTasks", () => {
+          it("should return false when there are no tasks", () => {
+              // Arrange
+              vm.tasks = [];
+              // Act, Assert
+              expect(vm.hasTasks()).toBe(false);
+          });
+
+          it("should return true when there are tasks", () => {
+              // Arrange, Act, Assert
+              expect(vm.hasTasks()).toBe(true);
+          });
       });
 
   });
@@ -181,7 +219,6 @@ describe('MainController', () => {
           }
       }
 
-      // on remove task => if it's active => set task
       // drag and drop (change rank)
       // can't start pomodoro if there are no tasks
       // search filter functionality

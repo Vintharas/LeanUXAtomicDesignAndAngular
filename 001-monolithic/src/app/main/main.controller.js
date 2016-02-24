@@ -11,7 +11,7 @@ export class MainController {
         // tasks
         tasks: getInitialTasks(),
         newTask: getNewTask(),
-        get hasNoTasks() { return this.tasks.length === 0;},
+        hasTasks(){ return this.tasks.length > 0; },
         $interval,
         $log
     });
@@ -29,7 +29,15 @@ export class MainController {
 
   removeTask(task){
       const index = this.tasks.indexOf(task);
-      if (index !== -1){ this.tasks.splice(index,1); }
+      if (index !== -1){ 
+          if (task.isActive) this.setNextTaskAsActive(index);
+          this.tasks.splice(index,1); 
+      }
+  }
+
+  setNextTaskAsActive(index){
+      if (this.tasks.length > index + 1) this.setTaskAsActive(this.tasks[index+1]);
+      else if (index > 0) this.setTaskAsActive(this.tasks[index-1]);
   }
 
   setTaskAsActive(task){
@@ -113,8 +121,8 @@ export class MainController {
 
 function getInitialTasks(){
     return [
-      Task({ title: 'Write dissertation on ewoks', rank: 0, pomodoros: 3, isActive: true}),
-      { title: 'Buy flowers for Malin', rank: 1, pomodoros: 1, isActive: false}
+      Task({ title: 'Write dissertation on ewoks', pomodoros: 3, isActive: true}),
+      { title: 'Buy flowers for Malin', pomodoros: 1, isActive: false}
     ];
 }
 
@@ -143,13 +151,12 @@ function getNewTask () {
     return Task();
 }
 
-function Task({title='', pomodoros=1, isActive=false, rank=0}={}){
+function Task({title='', pomodoros=1, isActive=false}={}){
     return {
         title, 
         pomodoros,
         workedPomodoros: 0,
-        isActive: isActive,
-        rank
+        isActive: isActive
     };
 }
 
