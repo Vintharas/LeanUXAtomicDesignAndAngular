@@ -219,11 +219,9 @@ describe('MainController', () => {
           }
       }
 
-      // drag and drop (change rank)
-      // can't start pomodoro if there are no tasks
-      // search filter functionality
       // Archive tasks and be able to see a historic view with some metrics regarding our performance 
       // We also want to be more consistent with the search/filter functionality within the app so we move it to the header’s top right corner:
+      // drag and drop (rank and change rank)
 
       afterEach(() => vm.cleanInterval());
 

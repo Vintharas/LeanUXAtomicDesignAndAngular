@@ -12,6 +12,9 @@ export class MainController {
         tasks: getInitialTasks(),
         newTask: getNewTask(),
         hasTasks(){ return this.tasks.length > 0; },
+        filterTerm: '',
+
+        // services
         $interval,
         $log
     });
