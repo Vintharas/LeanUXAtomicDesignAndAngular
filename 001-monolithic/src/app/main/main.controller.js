@@ -1,5 +1,5 @@
 export class MainController {
-  constructor ($interval, $log) {
+  constructor ($interval, $log, tasksService) {
     'ngInject';
     const vm = this,
           currentTime = getPomodoroTime();
@@ -9,14 +9,15 @@ export class MainController {
         timeLeft: formatTime(currentTime),
         currentTime,
         // tasks
-        tasks: getInitialTasks(),
-        newTask: getNewTask(),
+        tasks: tasksService.getInitialTasks(),
+        newTask: tasksService.getNewTask(),
         hasTasks(){ return this.tasks.length > 0; },
         filterTerm: '',
 
         // services
         $interval,
-        $log
+        $log,
+        tasksService
     });
 
     // angular and getters don't seem to work 
@@ -27,7 +28,7 @@ export class MainController {
   addNewTask(){
       this.tasks.push(this.newTask);
       if (this.tasks.length === 1) this.setTaskAsActive(this.newTask);
-      this.newTask = getNewTask();
+      this.newTask = this.tasksService.getNewTask();
   }
 
   removeTask(task){
@@ -122,13 +123,6 @@ export class MainController {
   }
 }
 
-function getInitialTasks(){
-    return [
-      Task({ title: 'Write dissertation on ewoks', pomodoros: 3, isActive: true}),
-      { title: 'Buy flowers for Malin', pomodoros: 1, isActive: false}
-    ];
-}
-
 function getPomodoroTime(){
     return 25*60;
 }
@@ -148,18 +142,5 @@ function formatTime(time){
 
 function formatDigits(digits){
     return digits < 10 ? "0" + digits : digits;
-}
-
-function getNewTask () {
-    return Task();
-}
-
-function Task({title='', pomodoros=1, isActive=false}={}){
-    return {
-        title, 
-        pomodoros,
-        workedPomodoros: 0,
-        isActive: isActive
-    };
 }
 

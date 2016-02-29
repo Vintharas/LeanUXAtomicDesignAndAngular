@@ -4,6 +4,9 @@
  */
 $navbar-inverse-link-color: #5AADBB;
 $icon-font-path: "../../bower_components/bootstrap-sass/assets/fonts/bootstrap/";
+$border-radius-base: 0;
+$border-radius-small: 0;
+$border-radius-large: 0;
 
 /**
  *  Do not remove the comments below. It's the markers used by wiredep to inject
@@ -27,6 +30,13 @@ $icon-font-path: "../../bower_components/bootstrap-sass/assets/fonts/bootstrap/"
   }
 }
 
+$margin-default: 12px;
+
+.row--with-margins{
+    margin-top: $margin-default;
+    margin-bottom: $margin-default;
+}
+
 /**
  *  Do not remove the comments below. It's the markers used by gulp-inject to inject
  *  all your sass files automatically
@@ -34,9 +44,3 @@ $icon-font-path: "../../bower_components/bootstrap-sass/assets/fonts/bootstrap/"
 // injector
 // endinjector
 
-$margin-default: 12px;
-
-.row--with-margins{
-    margin-top: $margin-default;
-    margin-bottom: $margin-default;
-}

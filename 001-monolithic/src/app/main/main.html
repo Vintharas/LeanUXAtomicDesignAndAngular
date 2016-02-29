@@ -5,7 +5,7 @@
   </header>
 
   <!-- timer -->
-  <section class="jumbotron text-center">
+  <section class="timer text-center">
     <h1>{{main.timeLeft}}</h1>
     <p class="animated infinite" ng-class="main.classAnimation">
       <button type="button" class="btn btn-lg btn-success" ng-click="main.startPomodoro()" ng-if="!main.performingTask" ng-disabled="!main.hasTasks()">Ready, Set, Go!</button>
@@ -27,22 +27,21 @@
             <div class="col-xs-4">
                 <button class="btn btn-default btn-block" ng-click="main.addNewTask()">Add new task</button>
             </div>
-            <div class="col-xs-12">
-                <input type="text" class="form-control" placeholder="search..." ng-model="main.searchTerm">
-            </div>
         </form>
     </div>
   </section>
   <!-- list tasks -->
   <section class="row">
     <div class="col-sm-6 col-sm-offset-3">
+      
+      <input type="text" class="form-control" placeholder="search..." ng-model="main.searchTerm">
       <ul class="list-group">
           <li class="list-group-item" ng-repeat="task in main.tasks | filter:main.searchTerm" ng-class="{active: task.isActive}">
               <span class="btn btn-info" ng-click="main.setTaskAsActive(task)"><i class="glyphicon glyphicon-play-circle"></i></span>
             {{ task.title }}
-            <span class="label label-success pull-right">{{ task.pomodoros }}</span>
-            <span class="label label-default pull-right">{{ task.workedPomodoros }}</span>
             <button class="btn btn-default pull-right" ng-click="main.removeTask(task)"><i class="glyphicon glyphicon-remove"></i></button>
+            <span class="label label-default">{{ task.workedPomodoros }}</span>
+            <span class="label label-success">{{ task.pomodoros }}</span>
           </li>
       </ul>
     </div>
