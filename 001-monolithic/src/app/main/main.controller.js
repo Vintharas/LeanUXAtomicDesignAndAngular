@@ -9,7 +9,7 @@ export class MainController {
         timeLeft: formatTime(currentTime),
         currentTime,
         // tasks
-        tasks: tasksService.getInitialTasks(),
+        tasks: tasksService.getTasks(),
         newTask: tasksService.getNewTask(),
         hasTasks(){ return this.tasks.length > 0; },
         filterTerm: '',
@@ -36,6 +36,14 @@ export class MainController {
       if (index !== -1){ 
           if (task.isActive) this.setNextTaskAsActive(index);
           this.tasks.splice(index,1); 
+      }
+  }
+
+  archiveTask(task){
+      const index = this.tasks.indexOf(task);
+      if (index !== -1){
+          let [taskToArchive] = this.tasks.splice(index,1);
+          this.tasksService.archiveTask(taskToArchive);
       }
   }
 

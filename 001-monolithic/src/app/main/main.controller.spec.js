@@ -1,11 +1,13 @@
 describe('MainController', () => {
   let vm,
-      interval;
+      interval,
+      _tasksService;
 
   beforeEach(angular.mock.module('001Monolithic'));
 
-  beforeEach(inject(($controller, $interval) => {
-    vm = $controller('MainController');
+  beforeEach(inject(($controller, $interval, tasksService) => {
+    _tasksService = tasksService;
+    vm = $controller('MainController', {tasksService});
     interval = $interval;
   }));
 
@@ -111,6 +113,19 @@ describe('MainController', () => {
               // Arrange, Act, Assert
               expect(vm.hasTasks()).toBe(true);
           });
+      });
+
+      it("should be able to archive completed tasks", () => {
+          // Arrange
+          _tasksService.archiveTask = sinon.spy();
+          const activeTask = vm.activeTask;
+          // Act
+          vm.archiveTask(activeTask);
+          // Assert
+          expect(vm.tasks.length).toBe(1);
+          expect(vm.tasks).not.toEqual(jasmine.objectContaining([activeTask]));
+          expect(_tasksService.archiveTask.calledOnce).toBe(true);
+          expect(_tasksService.archiveTask.calledWith(activeTask)).toBe(true);
       });
 
   });
@@ -220,6 +235,11 @@ describe('MainController', () => {
       }
 
       // Archive tasks and be able to see a historic view with some metrics regarding our performance 
+      // ONGOING
+      //   - fake all tasksService surface! Right now I have a mix of unit tests and integration tests
+      
+      // Sound
+      // Historic/Stats view
       // We also want to be more consistent with the search/filter functionality within the app so we move it to the header’s top right corner:
       // drag and drop (rank and change rank)
 
