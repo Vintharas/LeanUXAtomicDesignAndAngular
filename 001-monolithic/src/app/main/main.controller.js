@@ -1,3 +1,5 @@
+import {Task} from '../components/tasks/tasks.service.js';
+
 export class MainController {
   constructor ($interval, $log, tasksService) {
     'ngInject';
@@ -10,7 +12,7 @@ export class MainController {
         currentTime,
         // tasks
         tasks: tasksService.getTasks(),
-        newTask: tasksService.getNewTask(),
+        newTask: Task(),
         hasTasks(){ return this.tasks.length > 0; },
         filterTerm: '',
 
@@ -28,7 +30,9 @@ export class MainController {
   addNewTask(){
       this.tasks.push(this.newTask);
       if (this.tasks.length === 1) this.setTaskAsActive(this.newTask);
-      this.newTask = this.tasksService.getNewTask();
+      this.tasksService.saveTask(this.newTask);
+
+      this.newTask = Task();
   }
 
   removeTask(task){
@@ -36,6 +40,7 @@ export class MainController {
       if (index !== -1){ 
           if (task.isActive) this.setNextTaskAsActive(index);
           this.tasks.splice(index,1); 
+          this.tasksService.removeTask(task);
       }
   }
 

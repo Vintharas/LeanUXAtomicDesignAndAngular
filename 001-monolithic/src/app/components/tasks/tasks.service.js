@@ -7,44 +7,71 @@ export class TasksService {
         'ngInject';
         
         Object.assign(this, {
-            localStorageService
+            tasks: new Map(),
+            archivedTasks: new Map(),
+            localStorageService,
+            $log
         });
+
+        this.loadTasks();
     }
 
-    getNewTask(){
-        return Task();
+    loadTasks(){
+        this.loadActiveTasks();
+        this.loadArchivedTasks();
+    }
+
+    loadActiveTasks(){
+        let tasks = this.localStorageService.get(TASKS_KEY);    
+        if (tasks === null){
+            this.initializeLocalStorage(TASKS_KEY, getInitialTasks());
+            tasks = getInitialTasks();
+        }
+        this.$log.debug('restored tasks from local storage: ', tasks);
+        tasks.forEach(t => this.tasks.set(t.id, t));
+    }
+
+    loadArchivedTasks(){
+        let tasks = this.localStorageService.get(ARCHIVED_TASKS_KEY);    
+        if (tasks === null){
+            this.initializeLocalStorage(ARCHIVED_TASKS_KEY, []);
+            tasks = [];
+        }
+        this.$log.debug('restored archived tasks from local storage: ', tasks);
+        tasks.forEach(t => this.archivedTasks.set(t.id, t));
     }
 
     getTasks() {
-        if (!this.tasks){ 
-            this.initializeTasks();
-        }
-        return [...this.tasks];
+        return [...this.tasks.values()];
+    }
+
+    getArchivedTasks(){
+        return [...this.archivedTasks.values()];
+    }
+
+    saveTask(task){
+        this.tasks.set(task.id, task);
+        this.saveTasks();
     }
 
     archiveTask(task){
-        const index = this.tasks.indexOf(task);
-        if (index !== -1){
-            this.tasks.splice(task, 1);
-        }
-        this.archivedTasks.push(task);
+        this.tasks.delete(task.id);
+        this.archivedTasks.set(task.id, task);
+        this.saveTasks();
         this.saveArchivedTasks();
     }
 
+    removeTask(task){
+        this.tasks.delete(task.id);
+        this.saveTasks();
+    }
+
     saveTasks(){
-        this.localStorageService.set(TASKS_KEY, this.tasks);
+        this.localStorageService.set(TASKS_KEY, [...this.tasks.values()]);
     }
 
     saveArchivedTasks(){
-        this.localStorageService.set(ARCHIVED_TASKS_KEY, this.archivedTasks);
-    }
-
-    initializeTasks(){
-        this.tasks = this.localStorageService.get(TASKS_KEY);
-        if (this.tasks === null){
-            this.initializeLocalStorage(TASKS_KEY, getInitialTasks());
-            this.tasks = getInitialTasks();
-        }
+        this.localStorageService.set(ARCHIVED_TASKS_KEY, [...this.archivedTasks.values()]);
     }
 
     initializeArchivedTasks(){
@@ -56,17 +83,18 @@ export class TasksService {
     }
 
     initializeLocalStorage(key, value){
-        this.localStorageService.set(TASKS_KEY, getInitialTasks());
+        this.localStorageService.set(key, value);
     }
 
 }
 
-function Task({title='', pomodoros=1, isActive=false}={}){
+export function Task({title='', pomodoros=1, isActive=false}={}){
     return {
         title, 
         pomodoros,
         workedPomodoros: 0,
-        isActive: isActive
+        isActive: isActive,
+        id: guid()
     };
 }
 
@@ -77,3 +105,11 @@ function getInitialTasks(){
     ];
 }
 
+function guid() {
+  function s4() {
+    return Math.floor((1 + Math.random()) * 0x10000)
+      .toString(16)
+      .substring(1);
+  }
+  return s4() + s4() + '-' + s4() + '-' + s4() + '-' + s4() + '-' + s4() + s4() + s4();
+}

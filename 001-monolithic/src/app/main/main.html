@@ -39,6 +39,7 @@
           <li class="list-group-item" ng-repeat="task in main.tasks | filter:main.searchTerm" ng-class="{active: task.isActive}">
               <span class="btn btn-info" ng-click="main.setTaskAsActive(task)"><i class="glyphicon glyphicon-play-circle"></i></span>
             {{ task.title }}
+            <button class="btn btn-default pull-right" ng-click="main.archiveTask(task)"><i class="glyphicon glyphicon-ok"></i></button>
             <button class="btn btn-default pull-right" ng-click="main.removeTask(task)"><i class="glyphicon glyphicon-remove"></i></button>
             <span class="label label-default">{{ task.workedPomodoros }}</span>
             <span class="label label-success">{{ task.pomodoros }}</span>

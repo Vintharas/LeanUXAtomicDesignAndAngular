@@ -1,12 +1,20 @@
 describe('MainController', () => {
   let vm,
       interval,
-      _tasksService;
+      tasksService;
 
   beforeEach(angular.mock.module('001Monolithic'));
 
-  beforeEach(inject(($controller, $interval, tasksService) => {
-    _tasksService = tasksService;
+  beforeEach(inject(($controller, $interval, _tasksService_) => {
+    // setup fake task service
+    tasksService = _tasksService_;
+    tasksService.getTasks = sinon.stub();
+    tasksService.getTasks.returns([
+        { title: 'Write dissertation on ewoks', pomodoros: 3, isActive: true, workedPomodoros: 0},
+        { title: 'Buy flowers for Malin', pomodoros: 1, isActive: true, workedPomodoros: 0}
+        ]);
+    tasksService.removeTask = sinon.stub();
+   
     vm = $controller('MainController', {tasksService});
     interval = $interval;
   }));
@@ -40,12 +48,22 @@ describe('MainController', () => {
         // Assert
         expect(vm.tasks.length).toBe(3);
         const newTask = vm.tasks[2];
-        expect(newTask).toEqual({
+        expect(newTask).toEqual(jasmine.objectContaining({
             title: '',
             pomodoros: 1,
             workedPomodoros: 0,
             isActive: false
-        });
+        }));
+      });
+
+      it('should save task when adding a new task', () => {
+          // Arrange
+          tasksService.saveTask = sinon.spy();
+          // Act
+          vm.addNewTask();
+          // Assert
+          expect(tasksService.saveTask.calledOnce).toBe(true);
+          expect(tasksService.saveTask.calledWith(vm.tasks[2])).toBe(true);
       });
 
       it('should be able to set which task is active', () => {
@@ -76,6 +94,8 @@ describe('MainController', () => {
           vm.removeTask(taskToRemove);
           // Assert
           expect(vm.tasks).not.toEqual(jasmine.arrayContaining([taskToRemove]));
+          expect(tasksService.removeTask.calledOnce).toBe(true);
+          expect(tasksService.removeTask.calledWith(taskToRemove)).toBe(true);
       });
 
       it('should make the next task as active when removing the active task', () => {
@@ -117,15 +137,15 @@ describe('MainController', () => {
 
       it("should be able to archive completed tasks", () => {
           // Arrange
-          _tasksService.archiveTask = sinon.spy();
+          tasksService.archiveTask = sinon.spy();
           const activeTask = vm.activeTask;
           // Act
           vm.archiveTask(activeTask);
           // Assert
           expect(vm.tasks.length).toBe(1);
           expect(vm.tasks).not.toEqual(jasmine.objectContaining([activeTask]));
-          expect(_tasksService.archiveTask.calledOnce).toBe(true);
-          expect(_tasksService.archiveTask.calledWith(activeTask)).toBe(true);
+          expect(tasksService.archiveTask.calledOnce).toBe(true);
+          expect(tasksService.archiveTask.calledWith(activeTask)).toBe(true);
       });
 
   });
@@ -235,8 +255,6 @@ describe('MainController', () => {
       }
 
       // Archive tasks and be able to see a historic view with some metrics regarding our performance 
-      // ONGOING
-      //   - fake all tasksService surface! Right now I have a mix of unit tests and integration tests
       
       // Sound
       // Historic/Stats view
