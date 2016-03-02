@@ -29,6 +29,7 @@ export class TasksService {
         }
         this.$log.debug('restored tasks from local storage: ', tasks);
         tasks.forEach(t => this.tasks.set(t.id, t));
+        fixDatesAfterDeserialization(tasks);
     }
 
     loadArchivedTasks(){
@@ -39,6 +40,7 @@ export class TasksService {
         }
         this.$log.debug('restored archived tasks from local storage: ', tasks);
         tasks.forEach(t => this.archivedTasks.set(t.id, t));
+        fixDatesAfterDeserialization(tasks);
     }
 
     getTasks() {
@@ -74,14 +76,6 @@ export class TasksService {
         this.localStorageService.set(ARCHIVED_TASKS_KEY, [...this.archivedTasks.values()]);
     }
 
-    initializeArchivedTasks(){
-        this.archivedTasks = this.localStorageService.get(ARCHIVED_TASKS_KEY);
-        if (this.tasks === null){
-            this.initializeLocalStorage(ARCHIVED_TASKS_KEY, []);
-            this.archivedTasks = [];
-        }
-    }
-
     initializeLocalStorage(key, value){
         this.localStorageService.set(key, value);
     }
@@ -94,7 +88,8 @@ export function Task({title='', pomodoros=1, isActive=false}={}){
         pomodoros,
         workedPomodoros: 0,
         isActive: isActive,
-        id: guid()
+        id: guid(),
+        timestamp: new Date()
     };
 }
 
@@ -113,3 +108,8 @@ function guid() {
   }
   return s4() + s4() + '-' + s4() + '-' + s4() + '-' + s4() + '-' + s4() + s4() + s4();
 }
+
+function fixDatesAfterDeserialization(tasks){
+    tasks.forEach(t => t.timestamp = new Date(t.timestamp));
+}
+

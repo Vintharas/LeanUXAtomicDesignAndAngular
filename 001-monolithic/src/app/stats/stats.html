@@ -1,3 +1,28 @@
-<section>
-    ahdfasa
+<section class="container">
+
+  <!-- KPI -->
+  <div>
+      {{stats.averageEstimatedPomodoros}}
+      {{stats.averageWorkedPomodoros}}
+      {{stats.averageEstimatedPomodorosPerDay}}
+      {{stats.averageWorkedPomodorosPerDay}}
+      {{stats.maxWorkedPomodorosPerDay}}
+ </div>
+ 
+  <!-- tasks -->
+  <!-- list tasks -->
+  <section class="row">
+    <div class="col-sm-6 col-sm-offset-3">
+      
+      <input type="text" class="form-control" placeholder="search..." ng-model="stats.searchTerm">
+      <ul class="list-group">
+          <li class="list-group-item" ng-repeat="task in stats.archivedTasks | filter:stats.searchTerm">
+            {{ task.title }}
+            <span class="label label-default">{{ task.workedPomodoros }}</span>
+            <span class="label label-success">{{ task.pomodoros }}</span>
+          </li>
+      </ul>
+    </div>
+  </section>
+
 </section>
