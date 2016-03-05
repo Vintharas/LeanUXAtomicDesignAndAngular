@@ -1,13 +1,40 @@
 <section class="container">
 
   <!-- KPI -->
-  <div>
-      {{stats.averageEstimatedPomodoros}}
-      {{stats.averageWorkedPomodoros}}
-      {{stats.averageEstimatedPomodorosPerDay}}
-      {{stats.averageWorkedPomodorosPerDay}}
-      {{stats.maxWorkedPomodorosPerDay}}
- </div>
+  <section class="row">
+      <div class="col-sm-6 col-sm-offset-3 kpis">
+        <div class="panel panel-default">
+          <div class="panel-heading">Average Estimated Pomodoros</div>
+          <div class="panel-body">
+              {{stats.averageEstimatedPomodoros}}
+          </div>
+        </div>
+        <div class="panel panel-default">
+          <div class="panel-heading">Average Worked Pomodoros</div>
+          <div class="panel-body">
+              {{stats.averageWorkedPomodoros}}
+          </div>
+        </div>
+        <div class="panel panel-default">
+          <div class="panel-heading">Average Estimated Pomodoros Per Day</div>
+          <div class="panel-body">
+              {{stats.averageEstimatedPomodorosPerDay}}
+          </div>
+        </div>
+        <div class="panel panel-default">
+          <div class="panel-heading">Average Worked Pomodoros Per Day</div>
+          <div class="panel-body">
+              {{stats.averageWorkedPomodorosPerDay}}
+          </div>
+        </div>
+        <div class="panel panel-default">
+          <div class="panel-heading">Max Worked Pomodoros Per Day</div>
+          <div class="panel-body">
+              {{stats.maxWorkedPomodorosPerDay}}
+          </div>
+        </div>
+     </div>
+ </section>
  
   <!-- tasks -->
   <!-- list tasks -->
