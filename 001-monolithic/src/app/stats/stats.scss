@@ -1,3 +1,15 @@
 .kpis{
     display: flex;
+
+    .panel-kpi{
+        text-align: center;
+
+        .panel-heading{
+            font-weight: 800;
+        }
+
+        .panel-body{
+            font-size: 3em;
+        }
+    }
 }
