@@ -1,5 +1,5 @@
 export class StatsController{
-    constructor(tasksService){
+    constructor(tasksService, $scope){
         'ngInject';
         const archivedTasks = tasksService.getArchivedTasks();
 
@@ -7,13 +7,20 @@ export class StatsController{
             archivedTasks, 
             searchTerm: ''
         }, getKPIs(archivedTasks));
-    }
 
+        $scope.$watch('stats.searchTerm', searchTerm => {
+            const filteredTasks = this.archivedTasks
+                .filter(t => t.title.toLowerCase().includes(searchTerm.toLowerCase())); 
+            Object.assign(this, getKPIs(filteredTasks));
+        });
+    }
 }
 
 
 // this would've been awesome for testing haha
 function getKPIs(tasks){
+    if (tasks.length === 0) return NO_TASKS_KPIS;
+
     const allEstimatedPomodoros = getAllEstimatedPomodoros(tasks);
     const allWorkedPomodoros = getAllWorkedPomodoros(tasks);
 
@@ -29,6 +36,14 @@ function getKPIs(tasks){
         maxWorkedPomodorosPerDay
     }
 
+}
+
+const NO_TASKS_KPIS = {
+    averageEstimatedPomodoros: 0,
+    averageWorkedPomodoros: 0,
+    averageEstimatedPomodorosPerDay: 0,
+    averageWorkedPomodorosPerDay: 0,
+    maxWorkedPomodorosPerDay: 0 
 }
 
 function getAllEstimatedPomodoros(tasks){
