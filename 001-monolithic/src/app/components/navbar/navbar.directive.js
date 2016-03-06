@@ -14,8 +14,12 @@ export function NavbarDirective() {
 }
 
 class NavbarController {
-  constructor () {
+  constructor ($location) {
     'ngInject';
 
+    Object.assign(this, {$location});
+  }
+  isActive(currentLocation){
+      return this.$location.path().includes(currentLocation);
   }
 }
