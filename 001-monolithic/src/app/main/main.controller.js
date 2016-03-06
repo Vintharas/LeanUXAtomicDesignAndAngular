@@ -1,7 +1,7 @@
 import {Task} from '../components/tasks/tasks.service.js';
 
 export class MainController {
-  constructor ($interval, $log, tasksService) {
+  constructor ($interval, $log, tasksService, speechService) {
     'ngInject';
     const vm = this,
           currentTime = getPomodoroTime();
@@ -19,7 +19,8 @@ export class MainController {
         // services
         $interval,
         $log,
-        tasksService
+        tasksService,
+        speechService
     });
 
     // angular and getters don't seem to work 
@@ -68,6 +69,7 @@ export class MainController {
       if (this.performingTask) throw new Error("Can't start a new pomodoro while one is already running");
       this.performingTask = true;
       this.setTimerInterval(getPomodoroTime());
+      this.speechService.say('ring ring ring start pomodoro now! Time to kick some ass!');
   }
 
   cancelPomodoro(){
@@ -88,6 +90,7 @@ export class MainController {
   stopPomodoro(){
       this.performingTask = false;
       this.cleanInterval();
+      this.speechService.say('Stop! Time to rest and reflect!');
   }
 
   completePomodoro(){

@@ -8,6 +8,7 @@ import { StatsController } from './stats/stats.controller';
 import { NavbarDirective } from '../app/components/navbar/navbar.directive';
 import { TasksService } from '../app/components/tasks/tasks.service';
 import { LocalStorageService } from '../app/components/tasks/localstorage.service';
+import { SpeechService } from '../app/components/speech.service';
 
 angular.module('001Monolithic', ['ngAnimate', 'ngCookies', 'ngTouch', 'ngSanitize', 'ngMessages', 'ngAria', 'ngRoute', 'toastr'])
   .constant('malarkey', malarkey)
@@ -19,4 +20,5 @@ angular.module('001Monolithic', ['ngAnimate', 'ngCookies', 'ngTouch', 'ngSanitiz
   .controller('StatsController', StatsController)
   .service('tasksService', TasksService)
   .service('localStorageService', LocalStorageService)
+  .service('speechService', SpeechService)
   .directive('acmeNavbar', NavbarDirective)
