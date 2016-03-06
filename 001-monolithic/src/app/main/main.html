@@ -31,14 +31,20 @@
     <div class="col-sm-6 col-sm-offset-3">
       
       <input type="text" class="form-control" placeholder="search..." ng-model="main.searchTerm">
-      <ul class="list-group">
+      <ul class="list-group list-group-tasks list-group-tasks-current">
           <li class="list-group-item" ng-repeat="task in main.tasks | filter:main.searchTerm" ng-class="{active: task.isActive}">
-              <span class="btn btn-info" ng-click="main.setTaskAsActive(task)"><i class="glyphicon glyphicon-play-circle"></i></span>
+              <span class="btn btn-default" ng-click="main.setTaskAsActive(task)" ng-class="{'btn-active': task.isActive}"><i class="glyphicon glyphicon-play-circle"></i></span>
             {{ task.title }}
-            <button class="btn btn-default pull-right" ng-click="main.archiveTask(task)"><i class="glyphicon glyphicon-ok"></i></button>
-            <button class="btn btn-default pull-right" ng-click="main.removeTask(task)"><i class="glyphicon glyphicon-remove"></i></button>
-            <span class="label label-default">{{ task.workedPomodoros }}</span>
-            <span class="label label-success">{{ task.pomodoros }}</span>
+
+            <div class="pull-right">
+                <button class="btn btn-default pull-right" ng-click="main.archiveTask(task)"><i class="glyphicon glyphicon-ok"></i></button>
+                <button class="btn btn-default pull-right" ng-click="main.removeTask(task)"><i class="glyphicon glyphicon-remove"></i></button>
+            </div>
+
+            <div class="pull-right task-pomodoros">
+                <span class="label label-default">{{ task.workedPomodoros }}</span>
+                <span class="label label-success">{{ task.pomodoros }}</span>
+            </div>
           </li>
       </ul>
     </div>

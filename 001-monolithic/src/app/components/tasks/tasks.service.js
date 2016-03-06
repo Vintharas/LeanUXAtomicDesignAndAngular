@@ -68,6 +68,11 @@ export class TasksService {
         this.saveTasks();
     }
 
+    removeArchivedTask(task){
+        this.archivedTasks.delete(task.id);
+        this.saveArchivedTasks();
+    }
+
     saveTasks(){
         this.localStorageService.set(TASKS_KEY, [...this.tasks.values()]);
     }

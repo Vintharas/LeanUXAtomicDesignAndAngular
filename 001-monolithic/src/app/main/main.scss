@@ -3,3 +3,43 @@
         font-size: 90px;
     }
 }
+
+.btn-active{
+    background-color: #337ab7;
+    border-color: #337ab7;
+    color: white;
+
+    &:hover,
+    &:focus{
+        background-color: darken(#337ab7, 5%);
+        border-color: darken(#337ab7, 5%);
+        color: white;
+    }
+}
+
+.task-pomodoros{
+    font-size: 1.4em;
+    margin-right: 12px;
+}
+
+.list-group.list-group-tasks{
+
+    .list-group-item{
+        height: 55px;
+    }
+
+    .list-group-item-text{
+        display: inline-block;
+        padding: 6px 0;
+    }
+
+    &.list-group-tasks-current {
+
+        .list-group-item:nth-of-type(5) {
+            margin-bottom: 24px;
+        }
+    }
+}
+
+
+

@@ -5,7 +5,9 @@ export class StatsController{
 
         Object.assign(this, {
             archivedTasks, 
-            searchTerm: ''
+            searchTerm: '',
+            // services
+            tasksService,
         }, getKPIs(archivedTasks));
 
         $scope.$watch('stats.searchTerm', searchTerm => {
@@ -14,8 +16,15 @@ export class StatsController{
             Object.assign(this, getKPIs(filteredTasks));
         });
     }
-}
 
+    removeTask(task){
+        const index = this.archivedTasks.indexOf(task);
+        if (index !== -1){ 
+            this.archivedTasks.splice(index,1); 
+            this.tasksService.removeArchivedTask(task);
+        }
+    }
+}
 
 // this would've been awesome for testing haha
 function getKPIs(tasks){

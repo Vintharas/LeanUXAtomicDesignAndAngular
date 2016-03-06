@@ -42,11 +42,18 @@
     <div class="col-sm-6 col-sm-offset-3">
       
       <input type="text" class="form-control" placeholder="search..." ng-model="stats.searchTerm">
-      <ul class="list-group">
+      <ul class="list-group list-group-tasks">
           <li class="list-group-item" ng-repeat="task in stats.archivedTasks | filter:stats.searchTerm">
-            {{ task.title }}
-            <span class="label label-default">{{ task.workedPomodoros }}</span>
-            <span class="label label-success">{{ task.pomodoros }}</span>
+            <span class="list-group-item-text">{{ task.title }}</span>
+
+            <div class="pull-right">
+                <button class="btn btn-default pull-right" ng-click="stats.removeTask(task)"><i class="glyphicon glyphicon-remove"></i></button>
+            </div>
+
+            <div class="pull-right task-pomodoros">
+                <span class="label label-default">{{ task.workedPomodoros }}</span>
+                <span class="label label-success">{{ task.pomodoros }}</span>
+            </div>
           </li>
       </ul>
     </div>
